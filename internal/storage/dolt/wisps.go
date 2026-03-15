@@ -362,7 +362,7 @@ func (s *DoltStore) completeWisp(ctx context.Context, id string, reason string, 
 		return fmt.Errorf("wisp not found: %s", id)
 	}
 
-	if err := recordEventInTable(ctx, tx, "wisp_events", id, types.EventUpdated, actor, "completed"); err != nil {
+	if err := recordEventInTable(ctx, tx, "wisp_events", id, types.EventCompleted, actor, "completed"); err != nil {
 		return fmt.Errorf("failed to record event: %w", err)
 	}
 

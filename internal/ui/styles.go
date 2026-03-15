@@ -167,7 +167,7 @@ var (
 	StatusOpenStyle       = lipgloss.NewStyle().Foreground(ColorStatusOpen)
 	StatusInProgressStyle = lipgloss.NewStyle().Foreground(ColorStatusInProgress)
 	StatusClosedStyle     = lipgloss.NewStyle().Foreground(ColorStatusClosed)
-	StatusCompletedStyle  = lipgloss.NewStyle().Foreground(ColorPass)
+	StatusCompletedStyle  = lipgloss.NewStyle().Foreground(ColorAccent)
 	StatusBlockedStyle    = lipgloss.NewStyle().Foreground(ColorStatusBlocked)
 	StatusPinnedStyle     = lipgloss.NewStyle().Foreground(ColorStatusPinned)
 	StatusHookedStyle     = lipgloss.NewStyle().Foreground(ColorStatusHooked)
@@ -212,7 +212,7 @@ const (
 	StatusIconOpen       = "○" // available to work (hollow circle)
 	StatusIconInProgress = "◐" // active work (half-filled)
 	StatusIconBlocked    = "●" // needs attention (filled circle)
-	StatusIconCompleted  = "✓" // completed, pending verification (checkmark)
+	StatusIconCompleted  = "◎" // completed, pending verification (bullseye)
 	StatusIconClosed     = "✓" // fully closed (checkmark)
 	StatusIconDeferred   = "❄" // scheduled for later (snowflake)
 	StatusIconPinned     = "📌" // elevated priority

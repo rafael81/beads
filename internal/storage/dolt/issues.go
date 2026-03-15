@@ -431,7 +431,8 @@ func (s *DoltStore) CompleteIssue(ctx context.Context, id string, reason string,
 	defer func() { _ = tx.Rollback() }()
 
 	result, err := tx.ExecContext(ctx, `
-		UPDATE issues SET status = ?, updated_at = ?, notes = CONCAT(COALESCE(notes, ''), ?), closed_by_session = ?
+		UPDATE issues SET status = ?, updated_at = ?, notes = CONCAT(COALESCE(notes, ''), ?), closed_by_session = ?,
+		closed_at = NULL, close_reason = ''
 		WHERE id = ?
 	`, types.StatusCompleted, now, "\n\nCompletion Note: "+reason, session, id)
 	if err != nil {
@@ -446,7 +447,7 @@ func (s *DoltStore) CompleteIssue(ctx context.Context, id string, reason string,
 		return fmt.Errorf("issue not found: %s", id)
 	}
 
-	if err := recordEvent(ctx, tx, id, types.EventUpdated, actor, "status", "completed"); err != nil {
+	if err := recordEvent(ctx, tx, id, types.EventCompleted, actor, "status", "completed"); err != nil {
 		return fmt.Errorf("failed to record event: %w", err)
 	}
 

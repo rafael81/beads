@@ -60,7 +60,7 @@ The graph shows execution order:
 - Higher layers depend on lower layers
 - Nodes in the same layer can run in parallel
 
-Status icons: ○ open  ◐ in_progress  ✓ completed  ● blocked  ✓ closed  ❄ deferred
+Status icons: ○ open  ◐ in_progress  ◎ completed  ● blocked  ✓ closed  ❄ deferred
 
 Examples:
   bd graph issue-id              # Terminal DAG visualization (default)
@@ -595,7 +595,7 @@ func renderGraph(layout *GraphLayout, subgraph *TemplateSubgraph) {
 	// For simplicity, we'll render layer by layer with arrows between them
 
 	// First, show the legend
-	fmt.Println("  Status: ○ open  ◐ in_progress  ✓ completed  ● blocked  ✓ closed")
+	fmt.Println("  Status: ○ open  ◐ in_progress  ◎ completed  ● blocked  ✓ closed")
 	fmt.Println()
 
 	// Build dependency counts from subgraph
@@ -673,7 +673,7 @@ func renderGraphCompact(layout *GraphLayout, subgraph *TemplateSubgraph) {
 		ui.RenderAccent("📊"), layout.RootID, len(layout.Nodes), len(layout.Layers))
 
 	// Legend
-	fmt.Println("  Status: ○ open  ◐ in_progress  ✓ completed  ● blocked  ✓ closed  ❄ deferred")
+	fmt.Println("  Status: ○ open  ◐ in_progress  ◎ completed  ● blocked  ✓ closed  ❄ deferred")
 	fmt.Println()
 
 	// Build parent-child map from subgraph dependencies

@@ -15,7 +15,7 @@ This file exists for compatibility with tools that look for AGENTS.md.
 **NEVER use emoji-style icons** (🔴🟠🟡🔵⚪) in CLI output. They cause cognitive overload.
 
 **ALWAYS use small Unicode symbols** with semantic colors:
-- Status: `○ ◐ ● ✓ ❄`
+- Status: `○ ◐ ● ◎ ✓ ❄`
 - Priority: `● P0` (filled circle with color)
 
 See [AGENT_INSTRUCTIONS.md](AGENT_INSTRUCTIONS.md) for full development guidelines.
@@ -140,6 +140,10 @@ bd update bd-42 --priority 1 --json
 bd complete bd-42 --reason "Implemented feature X" --json
 ```
 
+> [!IMPORTANT]
+> **Do not skip self-verification.** Even though `complete` means "pending verification", you MUST run all relevant tests and quality gates BEFORE calling `bd complete`. The handoff is to the reviewer, not to the CI/CD system to find your bugs.
+
+
 **Finalize/Verify (usually by another agent or human):**
 
 ```bash
@@ -186,6 +190,7 @@ bd automatically syncs via Dolt:
 - ✅ Always use `--json` flag for programmatic use
 - ✅ Link discovered work with `discovered-from` dependencies
 - ✅ Check `bd ready` before asking "what should I work on?"
+- ✅ **Self-verify BEFORE completing**: Always run tests and quality gates before `bd complete`
 - ❌ Do NOT create markdown TODO lists
 - ❌ Do NOT use external issue trackers
 - ❌ Do NOT duplicate tracking systems

@@ -25,7 +25,7 @@ func renderGraphVisual(layout *GraphLayout, subgraph *TemplateSubgraph) {
 	}
 
 	fmt.Printf("\n%s Dependency graph for %s:\n\n", ui.RenderAccent("📊"), layout.RootID)
-	fmt.Println("  Status: ○ open  ◐ in_progress  ✓ completed  ● blocked  ✓ closed  ❄ deferred")
+	fmt.Println("  Status: ○ open  ◐ in_progress  ◎ completed  ● blocked  ✓ closed  ❄ deferred")
 	fmt.Println()
 
 	numLayers := len(layout.Layers)
