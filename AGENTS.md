@@ -137,7 +137,13 @@ bd update bd-42 --priority 1 --json
 **Complete work:**
 
 ```bash
-bd close bd-42 --reason "Completed" --json
+bd complete bd-42 --reason "Implemented feature X" --json
+```
+
+**Finalize/Verify (usually by another agent or human):**
+
+```bash
+bd close bd-42 --reason "Verified correctly" --json
 ```
 
 ### Issue Types
@@ -163,7 +169,8 @@ bd close bd-42 --reason "Completed" --json
 3. **Work on it**: Implement, test, document
 4. **Discover new work?** Create linked issue:
    - `bd create "Found bug" --description="Details about what was found" -p 1 --deps discovered-from:<parent-id>`
-5. **Complete**: `bd close <id> --reason "Done"`
+5. **Mark Completed**: `bd complete <id> --reason "Work finished, pending verification"`
+6. **Final Close**: (After verification) `bd close <id> --reason "Verified"`
 
 ### Auto-Sync
 

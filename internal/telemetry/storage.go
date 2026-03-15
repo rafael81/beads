@@ -140,6 +140,17 @@ func (s *InstrumentedStorage) UpdateIssue(ctx context.Context, id string, update
 	return err
 }
 
+func (s *InstrumentedStorage) CompleteIssue(ctx context.Context, id string, reason string, actor string, session string) error {
+	attrs := []attribute.KeyValue{
+		attribute.String("bd.issue.id", id),
+		attribute.String("bd.actor", actor),
+	}
+	ctx, span, t := s.op(ctx, "CompleteIssue", attrs...)
+	err := s.inner.CompleteIssue(ctx, id, reason, actor, session)
+	s.done(ctx, span, t, err, attrs...)
+	return err
+}
+
 func (s *InstrumentedStorage) CloseIssue(ctx context.Context, id string, reason string, actor string, session string) error {
 	attrs := []attribute.KeyValue{
 		attribute.String("bd.issue.id", id),

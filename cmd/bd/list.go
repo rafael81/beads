@@ -434,7 +434,7 @@ var listCmd = &cobra.Command{
 				customStatuses = cs
 			}
 			if !s.IsValidWithCustom(customStatuses) {
-				FatalError("invalid status %q (valid: open, in_progress, blocked, deferred, closed, pinned, hooked)", status)
+				FatalError("invalid status %q (valid: open, in_progress, completed, blocked, deferred, closed, pinned, hooked)", status)
 			}
 			filter.Status = &s
 		}

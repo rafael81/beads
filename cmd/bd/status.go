@@ -105,6 +105,7 @@ Examples:
 		fmt.Printf("  Total Issues:           %d\n", stats.TotalIssues)
 		fmt.Printf("  Open:                   %s\n", ui.RenderPass(fmt.Sprintf("%d", stats.OpenIssues)))
 		fmt.Printf("  In Progress:            %s\n", ui.RenderWarn(fmt.Sprintf("%d", stats.InProgressIssues)))
+		fmt.Printf("  Completed:              %s\n", ui.RenderPass(fmt.Sprintf("%d", stats.CompletedIssues)))
 		fmt.Printf("  Blocked:                %s\n", ui.RenderFail(fmt.Sprintf("%d", stats.BlockedIssues)))
 		fmt.Printf("  Closed:                 %d\n", stats.ClosedIssues)
 		fmt.Printf("  Ready to Work:          %s\n", ui.RenderPass(fmt.Sprintf("%d", stats.ReadyIssues)))
@@ -185,6 +186,8 @@ func getAssignedStatistics(assignee string) *types.Statistics {
 			stats.BlockedIssues++
 		case types.StatusDeferred:
 			stats.DeferredIssues++
+		case types.StatusCompleted:
+			stats.CompletedIssues++
 		case types.StatusClosed:
 			stats.ClosedIssues++
 		}

@@ -38,6 +38,7 @@ type Storage interface {
 	GetIssueByExternalRef(ctx context.Context, externalRef string) (*types.Issue, error)
 	GetIssuesByIDs(ctx context.Context, ids []string) ([]*types.Issue, error)
 	UpdateIssue(ctx context.Context, id string, updates map[string]interface{}, actor string) error
+	CompleteIssue(ctx context.Context, id string, reason string, actor string, session string) error
 	CloseIssue(ctx context.Context, id string, reason string, actor string, session string) error
 	DeleteIssue(ctx context.Context, id string) error
 	SearchIssues(ctx context.Context, query string, filter types.IssueFilter) ([]*types.Issue, error)
@@ -137,6 +138,7 @@ type Transaction interface {
 	CreateIssue(ctx context.Context, issue *types.Issue, actor string) error
 	CreateIssues(ctx context.Context, issues []*types.Issue, actor string) error
 	UpdateIssue(ctx context.Context, id string, updates map[string]interface{}, actor string) error
+	CompleteIssue(ctx context.Context, id string, reason string, actor string, session string) error
 	CloseIssue(ctx context.Context, id string, reason string, actor string, session string) error
 	DeleteIssue(ctx context.Context, id string) error
 	GetIssue(ctx context.Context, id string) (*types.Issue, error)                                    // For read-your-writes within transaction

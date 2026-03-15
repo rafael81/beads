@@ -388,6 +388,7 @@ const (
 	StatusBlocked    Status = "blocked"
 	StatusDeferred   Status = "deferred" // Deliberately put on ice for later
 	StatusClosed     Status = "closed"
+	StatusCompleted  Status = "completed" // Done by worker, pending verification
 	StatusPinned     Status = "pinned" // Persistent bead that stays open indefinitely
 	StatusHooked     Status = "hooked" // Work attached to an agent's hook (GUPP)
 )
@@ -395,7 +396,7 @@ const (
 // IsValid checks if the status value is valid (built-in statuses only)
 func (s Status) IsValid() bool {
 	switch s {
-	case StatusOpen, StatusInProgress, StatusBlocked, StatusDeferred, StatusClosed, StatusPinned, StatusHooked:
+	case StatusOpen, StatusInProgress, StatusBlocked, StatusDeferred, StatusClosed, StatusCompleted, StatusPinned, StatusHooked:
 		return true
 	}
 	return false
@@ -906,6 +907,7 @@ type Statistics struct {
 	TotalIssues             int     `json:"total_issues"`
 	OpenIssues              int     `json:"open_issues"`
 	InProgressIssues        int     `json:"in_progress_issues"`
+	CompletedIssues         int     `json:"completed_issues"`
 	ClosedIssues            int     `json:"closed_issues"`
 	BlockedIssues           int     `json:"blocked_issues"`
 	DeferredIssues          int     `json:"deferred_issues"` // Issues on ice

@@ -415,6 +415,60 @@ func (s *DoltStore) CloseIssue(ctx context.Context, id string, reason string, ac
 	return nil
 }
 
+// CompleteIssue marks an issue as completed (pending verification)
+func (s *DoltStore) CompleteIssue(ctx context.Context, id string, reason string, actor string, session string) error {
+	// Route ephemeral IDs to wisps table
+	if s.isActiveWisp(ctx, id) {
+		return s.completeWisp(ctx, id, reason, actor, session)
+	}
+
+	now := time.Now().UTC()
+
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	result, err := tx.ExecContext(ctx, `
+		UPDATE issues SET status = ?, updated_at = ?, notes = CONCAT(COALESCE(notes, ''), ?), closed_by_session = ?
+		WHERE id = ?
+	`, types.StatusCompleted, now, "\n\nCompletion Note: "+reason, session, id)
+	if err != nil {
+		return fmt.Errorf("failed to complete issue: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+	if rows == 0 {
+		return fmt.Errorf("issue not found: %s", id)
+	}
+
+	if err := recordEvent(ctx, tx, id, types.EventUpdated, actor, "status", "completed"); err != nil {
+		return fmt.Errorf("failed to record event: %w", err)
+	}
+
+	// DOLT_ADD and DOLT_COMMIT
+	for _, table := range []string{"issues", "events"} {
+		_, _ = tx.ExecContext(ctx, "CALL DOLT_ADD(?)", table)
+	}
+	commitMsg := fmt.Sprintf("bd: complete %s", id)
+	if _, err := tx.ExecContext(ctx, "CALL DOLT_COMMIT('-m', ?, '--author', ?)",
+		commitMsg, s.commitAuthorString()); err != nil && !isDoltNothingToCommit(err) {
+		return fmt.Errorf("dolt commit: %w", err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return wrapTransactionError("commit complete issue", err)
+	}
+
+	// Completion changes the active set (from in_progress to completed), invalidate cache
+	s.invalidateBlockedIDsCache()
+	return nil
+}
+
 // DeleteIssue permanently removes an issue
 func (s *DoltStore) DeleteIssue(ctx context.Context, id string) error {
 	// Route ephemeral IDs to wisps table (falls through for promoted wisps)

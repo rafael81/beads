@@ -167,6 +167,7 @@ var (
 	StatusOpenStyle       = lipgloss.NewStyle().Foreground(ColorStatusOpen)
 	StatusInProgressStyle = lipgloss.NewStyle().Foreground(ColorStatusInProgress)
 	StatusClosedStyle     = lipgloss.NewStyle().Foreground(ColorStatusClosed)
+	StatusCompletedStyle  = lipgloss.NewStyle().Foreground(ColorPass)
 	StatusBlockedStyle    = lipgloss.NewStyle().Foreground(ColorStatusBlocked)
 	StatusPinnedStyle     = lipgloss.NewStyle().Foreground(ColorStatusPinned)
 	StatusHookedStyle     = lipgloss.NewStyle().Foreground(ColorStatusHooked)
@@ -211,7 +212,8 @@ const (
 	StatusIconOpen       = "○" // available to work (hollow circle)
 	StatusIconInProgress = "◐" // active work (half-filled)
 	StatusIconBlocked    = "●" // needs attention (filled circle)
-	StatusIconClosed     = "✓" // completed (checkmark)
+	StatusIconCompleted  = "✓" // completed, pending verification (checkmark)
+	StatusIconClosed     = "✓" // fully closed (checkmark)
 	StatusIconDeferred   = "❄" // scheduled for later (snowflake)
 	StatusIconPinned     = "📌" // elevated priority
 )
@@ -232,6 +234,8 @@ func RenderStatusIcon(status string) string {
 		return StatusBlockedStyle.Render(StatusIconBlocked)
 	case "closed":
 		return StatusClosedStyle.Render(StatusIconClosed)
+	case "completed":
+		return StatusCompletedStyle.Render(StatusIconCompleted)
 	case "deferred":
 		return MutedStyle.Render(StatusIconDeferred)
 	case "pinned":
@@ -253,6 +257,8 @@ func GetStatusIcon(status string) string {
 		return StatusIconBlocked
 	case "closed":
 		return StatusIconClosed
+	case "completed":
+		return StatusIconCompleted
 	case "deferred":
 		return StatusIconDeferred
 	case "pinned":
@@ -273,6 +279,8 @@ func GetStatusStyle(status string) lipgloss.Style {
 		return StatusBlockedStyle
 	case "closed":
 		return StatusClosedStyle
+	case "completed":
+		return StatusCompletedStyle
 	case "deferred":
 		return MutedStyle
 	case "pinned":
@@ -378,6 +386,8 @@ func RenderStatus(status string) string {
 		return StatusHookedStyle.Render(status)
 	case "closed":
 		return StatusClosedStyle.Render(status)
+	case "completed":
+		return StatusCompletedStyle.Render(status)
 	default: // open and others
 		return StatusOpenStyle.Render(status)
 	}

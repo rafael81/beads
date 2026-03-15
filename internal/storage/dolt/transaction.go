@@ -629,6 +629,25 @@ func (t *doltTransaction) CloseIssue(ctx context.Context, id string, reason stri
 	return wrapExecError("close issue in tx", err)
 }
 
+// CompleteIssue marks an issue as completed within the transaction
+func (t *doltTransaction) CompleteIssue(ctx context.Context, id string, reason string, actor string, session string) error {
+	table := "issues"
+	if t.isActiveWisp(ctx, id) {
+		table = "wisps"
+	}
+
+	now := time.Now().UTC()
+	//nolint:gosec // G201: table is hardcoded
+	_, err := t.tx.ExecContext(ctx, fmt.Sprintf(`
+		UPDATE %s SET status = ?, updated_at = ?, notes = CONCAT(COALESCE(notes, ''), ?), closed_by_session = ?
+		WHERE id = ?
+	`, table), types.StatusCompleted, now, "\n\nCompletion Note: "+reason, session, id)
+	if err == nil {
+		t.markDirty(table)
+	}
+	return wrapExecError("complete issue in tx", err)
+}
+
 // DeleteIssue deletes an issue within the transaction
 func (t *doltTransaction) DeleteIssue(ctx context.Context, id string) error {
 	table := "issues"

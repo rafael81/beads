@@ -671,6 +671,7 @@ func (s *DoltStore) GetStatistics(ctx context.Context) (*types.Statistics, error
 			COUNT(*) as total,
 			COALESCE(SUM(CASE WHEN status = 'open' THEN 1 ELSE 0 END), 0) as open_count,
 			COALESCE(SUM(CASE WHEN status = 'in_progress' THEN 1 ELSE 0 END), 0) as in_progress,
+			COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) as completed,
 			COALESCE(SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END), 0) as closed,
 			COALESCE(SUM(CASE WHEN status = 'deferred' THEN 1 ELSE 0 END), 0) as deferred,
 			COALESCE(SUM(CASE WHEN pinned = 1 THEN 1 ELSE 0 END), 0) as pinned
@@ -679,6 +680,7 @@ func (s *DoltStore) GetStatistics(ctx context.Context) (*types.Statistics, error
 		&stats.TotalIssues,
 		&stats.OpenIssues,
 		&stats.InProgressIssues,
+		&stats.CompletedIssues,
 		&stats.ClosedIssues,
 		&stats.DeferredIssues,
 		&stats.PinnedIssues,

@@ -201,6 +201,10 @@ func (s *EmbeddedDoltStore) UpdateIssue(ctx context.Context, id string, updates 
 	panic("embeddeddolt: UpdateIssue not implemented")
 }
 
+func (s *EmbeddedDoltStore) CompleteIssue(ctx context.Context, id string, reason string, actor string, session string) error {
+	panic("embeddeddolt: CompleteIssue not implemented")
+}
+
 func (s *EmbeddedDoltStore) CloseIssue(ctx context.Context, id string, reason string, actor string, session string) error {
 	panic("embeddeddolt: CloseIssue not implemented")
 }

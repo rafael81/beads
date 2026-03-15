@@ -336,6 +336,39 @@ func (s *DoltStore) closeWisp(ctx context.Context, id string, reason string, act
 	return wrapTransactionError("commit close wisp", tx.Commit())
 }
 
+// completeWisp marks a wisp as completed in the wisps table.
+func (s *DoltStore) completeWisp(ctx context.Context, id string, reason string, actor string, session string) error {
+	now := time.Now().UTC()
+
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	result, err := tx.ExecContext(ctx, `
+		UPDATE wisps SET status = ?, updated_at = ?, notes = CONCAT(COALESCE(notes, ''), ?), closed_by_session = ?
+		WHERE id = ?
+	`, types.StatusCompleted, now, "\n\nCompletion Note: "+reason, session, id)
+	if err != nil {
+		return fmt.Errorf("failed to complete wisp: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+	if rows == 0 {
+		return fmt.Errorf("wisp not found: %s", id)
+	}
+
+	if err := recordEventInTable(ctx, tx, "wisp_events", id, types.EventUpdated, actor, "completed"); err != nil {
+		return fmt.Errorf("failed to record event: %w", err)
+	}
+
+	return wrapTransactionError("commit complete wisp", tx.Commit())
+}
+
 // deleteWisp permanently removes a wisp and its related data.
 func (s *DoltStore) deleteWisp(ctx context.Context, id string) error {
 	tx, err := s.db.BeginTx(ctx, nil)
